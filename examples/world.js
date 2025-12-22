@@ -1,3 +1,6 @@
-import { helloWorld } from '../dist/index.js';
+import { World } from './dist/index.js';
 
-helloWorld();
+const canvas = document.getElementById('canvas');
+
+const world = new World(canvas);
+world.run();

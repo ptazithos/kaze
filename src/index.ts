@@ -1,3 +1,2 @@
-export const helloWorld = () => {
-  console.log('Hello, world!');
-};
+export * from "./render";
+export * from "./world";
