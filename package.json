@@ -23,6 +23,7 @@
     "@biomejs/biome": "2.3.8",
     "@rslib/core": "^0.18.4",
     "@types/node": "^24.10.1",
+    "@webgpu/types": "^0.1.68",
     "typescript": "^5.9.3"
   },
   "private": true
