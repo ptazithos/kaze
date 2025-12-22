@@ -16,7 +16,8 @@
     "build": "rslib build",
     "check": "biome check --write",
     "dev": "rslib build --watch",
-    "format": "biome format --write"
+    "format": "biome format --write",
+    "example": "pnpm build && npx serve ."
   },
   "devDependencies": {
     "@biomejs/biome": "2.3.8",
