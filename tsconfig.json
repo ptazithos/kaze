@@ -1,6 +1,9 @@
 {
   "compilerOptions": {
-    "lib": ["ES2022", "DOM"],
+    "lib": [
+      "ES2022",
+      "DOM"
+    ],
     "module": "ESNext",
     "noEmit": true,
     "strict": true,
@@ -10,10 +13,19 @@
     "moduleResolution": "bundler",
     "useDefineForClassFields": true,
     "allowImportingTsExtensions": true,
-    "types": ["@webgpu/types"],
+    "types": [
+      "@webgpu/types"
+    ],
     "paths": {
-      "@types": ["./src/types"],
+      "@/*": [
+        "./src/*"
+      ],
+      "@types": [
+        "./src/types"
+      ],
     }
   },
-  "include": ["src"]
+  "include": [
+    "src"
+  ]
 }
