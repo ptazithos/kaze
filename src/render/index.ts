@@ -96,7 +96,7 @@ export class Render {
 
 		const passEncoder = commandEncoder.beginRenderPass(renderPassDescriptor);
 		passEncoder.setPipeline(this._pipeline);
-		passEncoder.draw(3);
+		passEncoder.draw(6);
 		passEncoder.end();
 
 		this._device.queue.submit([commandEncoder.finish()]);
