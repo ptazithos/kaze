@@ -1,9 +1,9 @@
-import { Render } from "./render";
+import { type CanvasInitOptions, Render } from "./render";
 
 export class World {
 	_render: Render;
-	constructor(canvas: HTMLCanvasElement) {
-		this._render = new Render(canvas);
+	constructor(option: CanvasInitOptions) {
+		this._render = new Render(option);
 	}
 
 	async run() {

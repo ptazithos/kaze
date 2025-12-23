@@ -1,39 +1,54 @@
-import type { Optional } from './types';
+import type { Optional } from "./types";
+
+export type CanvasInitOptions = {
+	canvas: HTMLCanvasElement;
+	witdth: number;
+	height: number;
+};
 
 export class Render {
-  _canvas: HTMLCanvasElement;
-  _adapter: Optional<GPUAdapter>;
-  _device: Optional<GPUDevice>;
-  _context: Optional<GPUCanvasContext>;
+	_canvas: HTMLCanvasElement;
+	_dimension: { width: number; height: number };
 
-  _inited: boolean;
+	_adapter: Optional<GPUAdapter>;
+	_device: Optional<GPUDevice>;
+	_context: Optional<GPUCanvasContext>;
 
-  constructor(canvas: HTMLCanvasElement) {
-    this._canvas = canvas;
-    this._adapter = null;
-    this._device = null;
-    this._context = null;
+	_inited: boolean;
 
-    this._inited = false;
-  }
+	constructor(option: CanvasInitOptions) {
+		this._canvas = option.canvas;
+		this._dimension = { width: option.witdth, height: option.height };
 
-  async init() {
-    this._adapter = await navigator.gpu.requestAdapter();
-    this._device = (await this._adapter?.requestDevice()) ?? null;
+		this._adapter = null;
+		this._device = null;
+		this._context = null;
 
-    if (!this._device)
-      throw new Error('WebGPU is not supported on this browser.');
+		this._inited = false;
+	}
 
-    const context = this._canvas.getContext('webgpu') as GPUCanvasContext;
-    context.configure({
-      device: this._device,
-      format: navigator.gpu.getPreferredCanvasFormat(),
-    });
+	setDimension(width: number, height: number) {
+		this._dimension.width = width;
+		this._dimension.height = height;
+	}
 
-    this._inited = true;
-  }
+	async init() {
+		this._adapter = await navigator.gpu.requestAdapter();
+		this._device = (await this._adapter?.requestDevice()) ?? null;
 
-  async render() {
-    console.log('Rendering...');
-  }
+		if (!this._device)
+			throw new Error("WebGPU is not supported on this browser.");
+
+		const context = this._canvas.getContext("webgpu") as GPUCanvasContext;
+		context.configure({
+			device: this._device,
+			format: navigator.gpu.getPreferredCanvasFormat(),
+		});
+
+		this._inited = true;
+	}
+
+	async render() {
+		console.log("Rendering...");
+	}
 }
