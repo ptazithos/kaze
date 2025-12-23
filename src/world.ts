@@ -1,3 +1,4 @@
+import { Component } from "./component";
 import { Entity } from "./entity";
 import { type CanvasInitOptions,  Renderer } from "./renderer";
 import { render, transform } from "./system";
