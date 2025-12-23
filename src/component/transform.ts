@@ -1,18 +1,18 @@
-import type { Position, Rotation, Size } from "@types";
+import type { Rotation, Scale, Translate } from "@types";
 import {Component} from "./component";
 
 export class Transform extends Component {
 	static name = "Transform";
 
-	position: Position;
-	size: Size;
+	translate: Translate;
 	rotation: Rotation;
+	scale: Scale;
 
-	constructor(position?: Position, size?: Size, rotation?: Rotation) {
+	constructor(translate?: Translate, scale?: Scale, rotation?: Rotation) {
 		super();
 
-		this.position = { x: 0, y: 0, ...position };
-		this.size = { width: 0, height: 0, ...size };
-		this.rotation = { angle: 0, ...rotation };
+		this.translate = translate || { x: 0, y: 0 };
+		this.scale = scale || { x: 1, y: 1 };
+		this.rotation = rotation || { angle: 0 };
 	}
 }

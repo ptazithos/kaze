@@ -8,10 +8,9 @@ const height = canvas.clientHeight * pixelRatio;
 const world = new World({ canvas, width, height })
 const sprite = createSprite(world)
 
-sprite.transform.position = { x: 100, y: 100 };
+sprite.transform.translate = { x: width / 2, y: height / 2 };
 sprite.transform.scale = { x: 50, y: 50 };
 sprite.transform.rotation = Math.PI / 4;
-sprite.transform.size = { width: 1, height: 1 };
 
 console.log(world.getComponents(sprite.raw))
 

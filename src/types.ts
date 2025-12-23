@@ -1,6 +1,6 @@
 export type Optional<T> = T | null;
 
-export type Position = {
+export type Translate = {
 	x: number;
 	y: number;
 };
