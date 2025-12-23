@@ -20,4 +20,9 @@ export default defineConfig({
 			dts: true,
 		},
 	],
+	resolve: {
+		alias: {
+			"@types": "./src/types.ts",
+		},
+	},
 });
