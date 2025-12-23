@@ -1,10 +1,23 @@
-import { defineConfig } from '@rslib/core';
+import { defineConfig } from "@rslib/core";
 
 export default defineConfig({
-  lib: [
-    {
-      format: 'esm',
-      dts: true,
-    },
-  ],
+	tools: {
+		rspack(_config, { addRules }) {
+			addRules([
+				{
+					test: /\.wgsl$/,
+					type: "asset/source",
+					generator: {
+						importMode: "preserve",
+					},
+				},
+			]);
+		},
+	},
+	lib: [
+		{
+			format: "esm",
+			dts: true,
+		},
+	],
 });
