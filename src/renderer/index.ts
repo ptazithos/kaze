@@ -9,7 +9,7 @@ export type CanvasInitOptions = {
 	height: number;
 };
 
-export class Render {
+export class Renderer {
 	_canvas: HTMLCanvasElement;
 	_dimension: { width: number; height: number };
 
@@ -76,7 +76,7 @@ export class Render {
 		this._inited = true;
 	}
 
-	async render() {
+	render() {
 		const commandEncoder = this._device?.createCommandEncoder();
 		const textureView = this._context?.getCurrentTexture().createView();
 

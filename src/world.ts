@@ -1,19 +1,26 @@
-import { type CanvasInitOptions, Render } from "./render";
+import { Entity } from "./entity";
+import { type CanvasInitOptions,  Renderer } from "./renderer";
+import { render, transform } from "./system";
 
 export class World {
-	_render: Render;
+	_renderer: Renderer;
+	_entities: Array<Entity> = []
+
 	constructor(option: CanvasInitOptions) {
-		this._render = new Render(option);
+		this._renderer = new Renderer(option);
+		this._entities = [];
 	}
 
 	async run() {
-		await this._render.init();
+		await this._renderer.init();
 
 		requestAnimationFrame(() => this.update());
 	}
 
 	update() {
-		this._render.render();
+		transform(this._entities);
+		render(this._entities, this._renderer);
+
 		requestAnimationFrame(() => this.update());
 	}
 }

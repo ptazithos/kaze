@@ -1,1 +1,20 @@
 export type Optional<T> = T | null;
+
+export type Position = {
+	x: number;
+	y: number;
+};
+
+export type Scale = {
+	x: number;
+	y: number;
+};
+
+export type Size = {
+	width: number;
+	height: number;
+};
+
+export type Rotation = {
+	angle: number;
+};
