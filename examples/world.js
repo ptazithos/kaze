@@ -13,7 +13,7 @@ sprite.transform.scale = { x: 50, y: 50 };
 sprite.transform.rotation = Math.PI / 4;
 
 sprite.region.position = { x: -0.5, y: -0.5 };
-sprite.region.size = { width: 100, height: 100 };
+sprite.region.size = { width: 1, height: 1 };
 
 console.log(world.getComponents(sprite.raw));
 

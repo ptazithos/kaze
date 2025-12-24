@@ -2,7 +2,8 @@ import type { Position, Size } from "@types";
 import { Component } from "./component";
 
 export class Region extends Component {
-	static name = "Region";
+	static name = "region";
+	static bufferSize = 4;
 
 	position: Position;
 	size: Size;

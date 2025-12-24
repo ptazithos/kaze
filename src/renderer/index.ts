@@ -76,18 +76,32 @@ export class Renderer {
 		this._inited = true;
 	}
 
-	render() {
+	render(storageData: ArrayBuffer, objCount: number) {
 		const commandEncoder = this._device?.createCommandEncoder();
 		const textureView = this._context?.getCurrentTexture().createView();
 
 		if (!commandEncoder || !textureView || !this._pipeline || !this._device)
 			throw new Error("Render not initialized properly.");
 
+		const storageBuffer = this._device.createBuffer({
+			label: "sprite size & position buffer",
+			size: storageData.byteLength,
+			usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
+		});
+
+		this._device.queue.writeBuffer(storageBuffer, 0, storageData);
+
+		const bindGroup = this._device.createBindGroup({
+			label: `bind group for sprite`,
+			layout: this._pipeline.getBindGroupLayout(0),
+			entries: [{ binding: 0, resource: { buffer: storageBuffer } }],
+		});
+
 		const renderPassDescriptor: GPURenderPassDescriptor = {
 			colorAttachments: [
 				{
 					view: textureView,
-					clearValue: [0, 0, 0, 0], // Clear to transparent
+					clearValue: [0, 0, 0, 0],
 					loadOp: "clear" as GPULoadOp,
 					storeOp: "store" as GPUStoreOp,
 				},
@@ -96,7 +110,8 @@ export class Renderer {
 
 		const passEncoder = commandEncoder.beginRenderPass(renderPassDescriptor);
 		passEncoder.setPipeline(this._pipeline);
-		passEncoder.draw(6);
+		passEncoder.setBindGroup(0, bindGroup);
+		passEncoder.draw(6, objCount);
 		passEncoder.end();
 
 		this._device.queue.submit([commandEncoder.finish()]);
