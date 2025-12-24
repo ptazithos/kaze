@@ -1,14 +1,15 @@
 export type Optional<T> = T | null;
 
-export type Translate = {
+export type CoordinateLike = {
 	x: number;
 	y: number;
 };
 
-export type Scale = {
-	x: number;
-	y: number;
-};
+export type Position = CoordinateLike;
+
+export type Scale = CoordinateLike;
+
+export type Translate = CoordinateLike;
 
 export type Size = {
 	width: number;

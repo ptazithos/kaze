@@ -1,6 +1,6 @@
-import { Component } from "./component";
+import type { Component } from "./component";
 import { Entity } from "./entity";
-import { type CanvasInitOptions,  Renderer } from "./renderer";
+import { type CanvasInitOptions, Renderer } from "./renderer";
 import { render, transform } from "./system";
 
 export class World {
@@ -27,24 +27,28 @@ export class World {
 		requestAnimationFrame(() => this.update());
 	}
 
-	createEntity(){
+	createEntity() {
 		const entity = new Entity();
 		this._entities.set(entity.id, new Map<string, Component>());
 		return entity;
 	}
 
-	addComponent<T extends Component>(entities: Entity, component: T) {
+	addComponent<T extends Component>(
+		entities: Entity,
+		componentClass: new () => T,
+	) {
 		const entityComponents = this._entities.get(entities.id);
 		if (entityComponents) {
-			entityComponents.set(component.constructor.name, component);
-		}
-		else {
+			entityComponents.set(componentClass.name, new componentClass());
+		} else {
 			throw new Error(`Entity with id ${entities.id} does not exist.`);
 		}
 	}
 
-
-	getComponent<T extends Component>(entity: Entity, componentClass: new () => T): T | undefined {
+	getComponent<T extends Component>(
+		entity: Entity,
+		componentClass: new () => T,
+	): T | undefined {
 		const entityComponents = this._entities.get(entity.id);
 		if (entityComponents) {
 			return entityComponents.get(componentClass.name) as T | undefined;
@@ -52,7 +56,7 @@ export class World {
 		return undefined;
 	}
 
-	getComponents (entity: Entity): Map<string, Component> | undefined {
+	getComponents(entity: Entity): Map<string, Component> | undefined {
 		return this._entities.get(entity.id);
 	}
 }

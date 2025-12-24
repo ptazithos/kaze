@@ -1,3 +1,5 @@
 export class Component {
-   static name: string;
+	static name: string = "Base";
+
+	cconstructor() {}
 }

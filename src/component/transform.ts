@@ -1,5 +1,5 @@
 import type { Rotation, Scale, Translate } from "@types";
-import {Component} from "./component";
+import { Component } from "./component";
 
 export class Transform extends Component {
 	static name = "Transform";
