@@ -21,17 +21,17 @@ fn main(
     let p = vec2f(sprite.position.x * scale.x - 1.0, 1.0 - sprite.position.y * scale.y);
     let s = sprite.size / resolution;
     
-    let pos = array<vec2f, 6>(
-        p,
-        p + vec2f(s.x, 0),
-        p + vec2f(0, -s.y),
-        p + vec2f(s.x, 0),
-        p + vec2f(s.x, -s.y),
-        p + vec2f(0, -s.y)
-    );
+    var pos: vec2f;
+    switch (vertex_index % 6u) {
+        case 0u: { pos = p; }
+        case 1u, 3u: { pos = p + vec2f(s.x, 0); }
+        case 2u, 5u: { pos = p + vec2f(0, -s.y); }
+        case 4u: { pos = p + vec2f(s.x, -s.y); }
+        default: { pos = p; }
+    }
 
     var output: VertexOutput;
-    output.position = vec4f(pos[vertex_index % 6u], 0.0, 1.0);
+    output.position = vec4f(pos, 0.0, 1.0);
     output.color = vec4f(abs(sprite.position / resolution), max(s.x, s.y), 1.0);
     return output;
 }
