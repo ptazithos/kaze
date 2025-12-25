@@ -91,10 +91,25 @@ export class Renderer {
 
 		this._device.queue.writeBuffer(storageBuffer, 0, storageData);
 
+		const uniformBuffer = this._device.createBuffer({
+			label: "resolution unimfor",
+			size: 4 + 4,
+			usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST,
+		});
+
+		this._device.queue.writeBuffer(
+			uniformBuffer,
+			0,
+			new Float32Array([this._canvas.width, this._canvas.height]),
+		);
+
 		const bindGroup = this._device.createBindGroup({
 			label: `bind group for sprite`,
 			layout: this._pipeline.getBindGroupLayout(0),
-			entries: [{ binding: 0, resource: { buffer: storageBuffer } }],
+			entries: [
+				{ binding: 0, resource: { buffer: storageBuffer } },
+				{ binding: 1, resource: { buffer: uniformBuffer } },
+			],
 		});
 
 		const renderPassDescriptor: GPURenderPassDescriptor = {

@@ -59,4 +59,9 @@ export class World {
 	getComponents(entity: Entity): Map<string, Component> | undefined {
 		return this._entities.get(entity.id);
 	}
+
+
+	get renderer(){
+		return this._renderer;
+	}
 }
