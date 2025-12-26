@@ -1,13 +1,12 @@
 import { type Component, Region, Transform } from "@/component";
 import type { Renderer } from "@/renderer";
+import type { Optional } from "@/types";
 
 export const render = (
 	entities: Array<Map<string, Component>>,
 	renderer: Renderer,
 ) => {
-	const renderables = entities.filter(
-		(entity) => entity.has("region") && entity.has("transform"),
-	);
+	const renderables = entities.filter((entity) => entity.has("region"));
 	const entitySize = Region.bufferSize + Transform.bufferSize;
 	const vertexData = new Float32Array(renderables.length * entitySize);
 
@@ -22,7 +21,8 @@ export const render = (
 		vertexData[i * entitySize + 4] = region.anchor.x;
 		vertexData[i * entitySize + 5] = region.anchor.y;
 
-		const transform = entity.get("transform") as Transform;
+		const transform =
+			(entity.get("transform") as Optional<Transform>) ?? new Transform();
 		vertexData[i * entitySize + 6] = transform.translate.x;
 		vertexData[i * entitySize + 7] = transform.translate.y;
 		vertexData[i * entitySize + 8] = transform.scale.x;
