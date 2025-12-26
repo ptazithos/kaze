@@ -20,6 +20,10 @@ export class Renderer {
 	_texture: Optional<GPUTexture>;
 	_sampler: Optional<GPUSampler>;
 
+	_textureCache: Map<ImageBitmap, GPUTexture>;
+	_storageBuffer: Optional<GPUBuffer>;
+	_uniformBuffer: Optional<GPUBuffer>;
+
 	_inited: boolean;
 
 	constructor(option: CanvasInitOptions) {
@@ -34,6 +38,9 @@ export class Renderer {
 		this._pipeline = null;
 		this._texture = null;
 		this._sampler = null;
+		this._textureCache = new Map();
+		this._storageBuffer = null;
+		this._uniformBuffer = null;
 
 		this._inited = false;
 	}
@@ -92,45 +99,56 @@ export class Renderer {
 		if (!commandEncoder || !textureView || !this._pipeline || !this._device)
 			throw new Error("Render not initialized properly.");
 
-		const storageBuffer = this._device.createBuffer({
-			label: "sprite size & position & anchor buffer",
-			size: storageData.byteLength,
-			usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
-		});
+		if (
+			!this._storageBuffer ||
+			this._storageBuffer.size < storageData.byteLength
+		) {
+			this._storageBuffer?.destroy();
+			this._storageBuffer = this._device.createBuffer({
+				label: "sprite size & position & anchor buffer",
+				size: storageData.byteLength,
+				usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
+			});
+		}
+		this._device.queue.writeBuffer(this._storageBuffer, 0, storageData);
 
-		this._device.queue.writeBuffer(storageBuffer, 0, storageData);
-
-		const uniformBuffer = this._device.createBuffer({
-			label: "resolution unimfor",
-			size: 4 + 4,
-			usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST,
-		});
-
+		if (!this._uniformBuffer) {
+			this._uniformBuffer = this._device.createBuffer({
+				label: "resolution uniform",
+				size: 4 + 4,
+				usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST,
+			});
+		}
 		this._device.queue.writeBuffer(
-			uniformBuffer,
+			this._uniformBuffer,
 			0,
 			new Float32Array([this._canvas.width, this._canvas.height]),
 		);
 
-		// Create individual textures from images
 		const textures: GPUTexture[] = [];
 		for (let i = 0; i < 16; i++) {
 			const index = Math.min(i, images.length - 1);
 			const img = images[index];
-			const texture = this._device.createTexture({
-				size: [img.width, img.height, 1],
-				format: "rgba8unorm",
-				usage:
-					GPUTextureUsage.TEXTURE_BINDING |
-					GPUTextureUsage.COPY_DST |
-					GPUTextureUsage.RENDER_ATTACHMENT,
-			});
 
-			this._device.queue.copyExternalImageToTexture(
-				{ source: img },
-				{ texture },
-				[img.width, img.height],
-			);
+			let texture = this._textureCache.get(img);
+			if (!texture) {
+				texture = this._device.createTexture({
+					size: [img.width, img.height, 1],
+					format: "rgba8unorm",
+					usage:
+						GPUTextureUsage.TEXTURE_BINDING |
+						GPUTextureUsage.COPY_DST |
+						GPUTextureUsage.RENDER_ATTACHMENT,
+				});
+
+				this._device.queue.copyExternalImageToTexture(
+					{ source: img },
+					{ texture },
+					[img.width, img.height],
+				);
+
+				this._textureCache.set(img, texture);
+			}
 
 			textures.push(texture);
 		}
@@ -141,8 +159,8 @@ export class Renderer {
 			label: `bind group for sprite`,
 			layout: this._pipeline.getBindGroupLayout(0),
 			entries: [
-				{ binding: 0, resource: { buffer: storageBuffer } },
-				{ binding: 1, resource: { buffer: uniformBuffer } },
+				{ binding: 0, resource: { buffer: this._storageBuffer } },
+				{ binding: 1, resource: { buffer: this._uniformBuffer } },
 			],
 		});
 
