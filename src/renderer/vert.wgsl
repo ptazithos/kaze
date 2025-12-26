@@ -28,32 +28,27 @@ fn main(
     let size = sprite.size;
     let anchor = sprite.anchor;
 
-    var pos: vec2f;
+    var localPos: vec2f;
     switch (vertex_index % 6u) {
         case 0u: {
-          let localPos = size * anchor;
-          let worldPos = position - localPos;
-          pos = toClippedSpace(worldPos);
+          localPos = size * anchor;
         }
         case 1u, 3u: {
-          let localPos = size * vec2f(anchor.x - 1.0, anchor.y);
-          let worldPos = position - localPos;
-          pos = toClippedSpace(worldPos);
+          localPos = size * vec2f(anchor.x - 1.0, anchor.y);
         }
         case 2u, 5u: {
-          let localPos = size * vec2f(anchor.x, anchor.y - 1.0);
-          let worldPos = position - localPos;
-          pos = toClippedSpace(worldPos);
+          localPos = size * vec2f(anchor.x, anchor.y - 1.0);
         }
         case 4u: {
-          let localPos = size * vec2f(anchor.x - 1.0, anchor.y - 1.0);
-          let worldPos = position - localPos;
-          pos = toClippedSpace(worldPos);
+          localPos = size * vec2f(anchor.x - 1.0, anchor.y - 1.0);
         }
         default: {
-          pos = vec2f(0.0, 0.0);
+          localPos = vec2f(0.0, 0.0);
         }
     }
+
+    let worldPos = position + localPos;
+    let pos = toClippedSpace(worldPos);
 
     var output: VertexOutput;
     output.position = vec4f(pos, 0.0, 1.0);
