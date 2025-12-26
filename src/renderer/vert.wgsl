@@ -31,23 +31,23 @@ fn main(
     var pos: vec2f;
     switch (vertex_index % 6u) {
         case 0u: {
-          let bias = size * anchor;
-          let worldPos = position - bias;
+          let localPos = size * anchor;
+          let worldPos = position - localPos;
           pos = toClippedSpace(worldPos);
         }
         case 1u, 3u: {
-          let bias = size * vec2f(anchor.x - 1.0, anchor.y);
-          let worldPos = position - bias;
+          let localPos = size * vec2f(anchor.x - 1.0, anchor.y);
+          let worldPos = position - localPos;
           pos = toClippedSpace(worldPos);
         }
         case 2u, 5u: {
-          let bias = size * vec2f(anchor.x, anchor.y - 1.0);
-          let worldPos = position - bias;
+          let localPos = size * vec2f(anchor.x, anchor.y - 1.0);
+          let worldPos = position - localPos;
           pos = toClippedSpace(worldPos);
         }
         case 4u: {
-          let bias = size * vec2f(anchor.x - 1.0, anchor.y - 1.0);
-          let worldPos = position - bias;
+          let localPos = size * vec2f(anchor.x - 1.0, anchor.y - 1.0);
+          let worldPos = position - localPos;
           pos = toClippedSpace(worldPos);
         }
         default: {
