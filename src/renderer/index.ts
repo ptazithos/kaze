@@ -84,7 +84,7 @@ export class Renderer {
 			throw new Error("Render not initialized properly.");
 
 		const storageBuffer = this._device.createBuffer({
-			label: "sprite size & position buffer",
+			label: "sprite size & position & anchor buffer",
 			size: storageData.byteLength,
 			usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
 		});

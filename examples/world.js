@@ -17,7 +17,7 @@ const world = new World({ canvas, width, height });
 {
 	const sprite = createSprite(world);
 
-	sprite.region.position = { x: width * 0.2, y: height * 0.4 };
+	sprite.region.position = { x: width * 0.2, y: height * 0.2 };
 	sprite.region.size = { width: 500, height: 500 };
 }
 

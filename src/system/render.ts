@@ -16,6 +16,9 @@ export const render = (
 		vertexData[i * Region.bufferSize + 1] = region.position.y;
 		vertexData[i * Region.bufferSize + 2] = region.size.width;
 		vertexData[i * Region.bufferSize + 3] = region.size.height;
+		vertexData[i * Region.bufferSize + 4] = region.anchor.x;
+		vertexData[i * Region.bufferSize + 5] = region.anchor.y;
+		
 	}
 
 	renderer.render(vertexData.buffer, renderables.length);
