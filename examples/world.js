@@ -2,7 +2,6 @@ import { createSprite, World } from "./dist/index.js";
 
 const canvas = document.getElementById("canvas");
 const pixelRatio = window.devicePixelRatio;
-console.log("pixelRatio", pixelRatio);
 const width = canvas.clientWidth * pixelRatio;
 const height = canvas.clientHeight * pixelRatio;
 
