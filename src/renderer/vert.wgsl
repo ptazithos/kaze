@@ -20,6 +20,19 @@ struct VertexOutput {
 @group(1) @binding(1) var texture0: texture_2d<f32>;
 @group(1) @binding(2) var texture1: texture_2d<f32>;
 @group(1) @binding(3) var texture2: texture_2d<f32>;
+@group(1) @binding(4) var texture3: texture_2d<f32>;
+@group(1) @binding(5) var texture4: texture_2d<f32>;
+@group(1) @binding(6) var texture5: texture_2d<f32>;
+@group(1) @binding(7) var texture6: texture_2d<f32>;
+@group(1) @binding(8) var texture7: texture_2d<f32>;
+@group(1) @binding(9) var texture8: texture_2d<f32>;
+@group(1) @binding(10) var texture9: texture_2d<f32>;
+@group(1) @binding(11) var texture10: texture_2d<f32>;
+@group(1) @binding(12) var texture11: texture_2d<f32>;
+@group(1) @binding(13) var texture12: texture_2d<f32>;
+@group(1) @binding(14) var texture13: texture_2d<f32>;
+@group(1) @binding(15) var texture14: texture_2d<f32>;
+@group(1) @binding(16) var texture15: texture_2d<f32>;
 
 fn transalte(pos: vec2f, offset: vec2f) -> vec2f {
     return pos + offset;

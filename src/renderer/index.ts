@@ -114,8 +114,9 @@ export class Renderer {
 
 		// Create individual textures from images
 		const textures: GPUTexture[] = [];
-		for (let i = 0; i < Math.min(images.length, 8); i++) {
-			const img = images[i];
+		for (let i = 0; i < 16; i++) {
+			const index = Math.min(i, images.length - 1);
+			const img = images[index];
 			const texture = this._device.createTexture({
 				size: [img.width, img.height, 1],
 				format: "rgba8unorm",

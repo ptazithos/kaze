@@ -18,11 +18,10 @@ const texture = await getTexture();
 {
 	const sprite = createSprite(world);
 
-	sprite.region.position = { x: width / 2, y: height / 2 };
+	sprite.region.position = { x: width * 0.2, y: height / 2 };
 	sprite.region.size = { width: 200, height: 200 };
 
 	sprite.transform.rotation = Math.PI / 4;
-	sprite.transform.scale = { x: 2, y: 0.5 };
 
 	sprite.texture.image = texture;
 }
@@ -34,7 +33,17 @@ const texture = await getTexture();
 	sprite.region.size = { width: 200, height: 200 };
 
 	sprite.transform.rotation = Math.PI / 4;
-	sprite.transform.scale = { x: 0.5, y: 2 };
+
+	sprite.texture.image = texture;
+}
+
+{
+	const sprite = createSprite(world);
+
+	sprite.region.position = { x: width * 0.8, y: height / 2 };
+	sprite.region.size = { width: 200, height: 200 };
+
+	sprite.transform.rotation = Math.PI / 4;
 
 	sprite.texture.image = texture;
 }
