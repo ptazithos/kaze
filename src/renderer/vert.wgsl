@@ -2,6 +2,10 @@ struct Sprite {
   position: vec2f,
   size: vec2f,
   anchor: vec2f,
+
+  translate: vec2f,
+  scale: vec2f,
+  rotation: f32,
 };
 
 struct VertexOutput {
@@ -12,6 +16,22 @@ struct VertexOutput {
 @group(0) @binding(0) var<storage, read> sprites: array<Sprite>;
 @group(0) @binding(1) var<uniform> resolution: vec2f;
 
+fn transalte(pos: vec2f, offset: vec2f) -> vec2f {
+    return pos + offset;
+}
+
+fn scale(pos: vec2f, scale: vec2f) -> vec2f {
+    return pos * scale;
+}
+
+fn rotate(pos: vec2f, angle: f32) -> vec2f {
+    let s = sin(angle);
+    let c = cos(angle);
+    return vec2f(
+        pos.x * c - pos.y * s,
+        pos.x * s + pos.y * c
+    );
+}
 
 fn toClippedSpace(pos: vec2f) -> vec2f {
     let scale = 2.0 / resolution;
@@ -24,9 +44,14 @@ fn main(
     @builtin(instance_index) instanceIndex: u32
 ) -> VertexOutput {
     let sprite = sprites[instanceIndex];
+
     let position = sprite.position;
     let size = sprite.size;
     let anchor = sprite.anchor;
+
+    let offset = sprite.translate;
+    let ratio = sprite.scale;
+    let angle = sprite.rotation;
 
     var localPos: vec2f;
     switch (vertex_index % 6u) {
@@ -46,6 +71,10 @@ fn main(
           localPos = vec2f(0.0, 0.0);
         }
     }
+
+    localPos = transalte(localPos, offset);
+    localPos = scale(localPos, ratio);
+    localPos = rotate(localPos, angle);
 
     let worldPos = position + localPos;
     let pos = toClippedSpace(worldPos);
