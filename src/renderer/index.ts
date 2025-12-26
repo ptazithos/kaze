@@ -112,30 +112,26 @@ export class Renderer {
 			new Float32Array([this._canvas.width, this._canvas.height]),
 		);
 
-		// Create texture array from images
-		let textureWidth = 0;
-		let textureHeight = 0;
-		for (const img of images) {
-			textureWidth = Math.max(textureWidth, img.width);
-			textureHeight = Math.max(textureHeight, img.height);
-		}
+		// Create individual textures from images
+		const textures: GPUTexture[] = [];
+		for (let i = 0; i < Math.min(images.length, 8); i++) {
+			const img = images[i];
+			const texture = this._device.createTexture({
+				size: [img.width, img.height, 1],
+				format: "rgba8unorm",
+				usage:
+					GPUTextureUsage.TEXTURE_BINDING |
+					GPUTextureUsage.COPY_DST |
+					GPUTextureUsage.RENDER_ATTACHMENT,
+			});
 
-		const texture = this._device.createTexture({
-			size: [textureWidth, textureHeight, images.length],
-			format: "rgba8unorm",
-			usage:
-				GPUTextureUsage.TEXTURE_BINDING |
-				GPUTextureUsage.COPY_DST |
-				GPUTextureUsage.RENDER_ATTACHMENT,
-		});
-
-		// Copy images to texture layers
-		for (let i = 0; i < images.length; i++) {
 			this._device.queue.copyExternalImageToTexture(
-				{ source: images[i] },
-				{ texture, origin: [0, 0, i] },
-				[images[i].width, images[i].height],
+				{ source: img },
+				{ texture },
+				[img.width, img.height],
 			);
+
+			textures.push(texture);
 		}
 
 		if (!this._sampler) throw new Error("Sampler not initialized.");
@@ -146,8 +142,18 @@ export class Renderer {
 			entries: [
 				{ binding: 0, resource: { buffer: storageBuffer } },
 				{ binding: 1, resource: { buffer: uniformBuffer } },
-				{ binding: 2, resource: texture.createView({ dimension: "2d-array" }) },
-				{ binding: 3, resource: this._sampler },
+			],
+		});
+
+		const textureBindGroup = this._device.createBindGroup({
+			label: `bind group for textures`,
+			layout: this._pipeline.getBindGroupLayout(1),
+			entries: [
+				{ binding: 0, resource: this._sampler },
+				...textures.map((tex, i) => ({
+					binding: i + 1,
+					resource: tex.createView(),
+				})),
 			],
 		});
 
@@ -165,6 +171,7 @@ export class Renderer {
 		const passEncoder = commandEncoder.beginRenderPass(renderPassDescriptor);
 		passEncoder.setPipeline(this._pipeline);
 		passEncoder.setBindGroup(0, bindGroup);
+		passEncoder.setBindGroup(1, textureBindGroup);
 		passEncoder.draw(6, objCount);
 		passEncoder.end();
 

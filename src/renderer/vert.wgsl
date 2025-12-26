@@ -16,8 +16,10 @@ struct VertexOutput {
 
 @group(0) @binding(0) var<storage, read> sprites: array<Sprite>;
 @group(0) @binding(1) var<uniform> resolution: vec2f;
-@group(0) @binding(2) var textureArray: texture_2d_array<f32>;
-@group(0) @binding(3) var textureSampler: sampler;
+@group(1) @binding(0) var textureSampler: sampler;
+@group(1) @binding(1) var texture0: texture_2d<f32>;
+@group(1) @binding(2) var texture1: texture_2d<f32>;
+@group(1) @binding(3) var texture2: texture_2d<f32>;
 
 fn transalte(pos: vec2f, offset: vec2f) -> vec2f {
     return pos + offset;
