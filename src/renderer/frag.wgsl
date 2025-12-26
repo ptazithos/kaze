@@ -21,43 +21,24 @@ fn main(
   @location(0) uv: vec2f,
   @location(1) @interpolate(flat) instanceIndex: u32,
 ) -> @location(0) vec4f {
-  // Sample all textures (uniform control flow)
-  let color0 = textureSample(texture0, textureSampler, uv);
-  let color1 = textureSample(texture1, textureSampler, uv);
-  let color2 = textureSample(texture2, textureSampler, uv);
-  let color3 = textureSample(texture3, textureSampler, uv);
-  let color4 = textureSample(texture4, textureSampler, uv);
-  let color5 = textureSample(texture5, textureSampler, uv);
-  let color6 = textureSample(texture6, textureSampler, uv);
-  let color7 = textureSample(texture7, textureSampler, uv);
-  let color8 = textureSample(texture8, textureSampler, uv);
-  let color9 = textureSample(texture9, textureSampler, uv);
-  let color10 = textureSample(texture10, textureSampler, uv);
-  let color11 = textureSample(texture11, textureSampler, uv);
-  let color12 = textureSample(texture12, textureSampler, uv);
-  let color13 = textureSample(texture13, textureSampler, uv);
-  let color14 = textureSample(texture14, textureSampler, uv);
-  let color15 = textureSample(texture15, textureSampler, uv);
-  
-  // Select the appropriate color based on instance index
   var color = vec4f(1.0, 0.0, 1.0, 1.0); // magenta for invalid
   switch (instanceIndex) {
-    case 0u: { color = color0; }
-    case 1u: { color = color1; }
-    case 2u: { color = color2; }
-    case 3u: { color = color3; }
-    case 4u: { color = color4; }
-    case 5u: { color = color5; }
-    case 6u: { color = color6; }
-    case 7u: { color = color7; }
-    case 8u: { color = color8; }
-    case 9u: { color = color9; }
-    case 10u: { color = color10; }
-    case 11u: { color = color11; }
-    case 12u: { color = color12; }
-    case 13u: { color = color13; }
-    case 14u: { color = color14; }
-    case 15u: { color = color15; }
+    case 0u: { color = textureSampleLevel(texture0, textureSampler, uv, 0.0); }
+    case 1u: { color = textureSampleLevel(texture1, textureSampler, uv, 0.0); }
+    case 2u: { color = textureSampleLevel(texture2, textureSampler, uv, 0.0); }
+    case 3u: { color = textureSampleLevel(texture3, textureSampler, uv, 0.0); }
+    case 4u: { color = textureSampleLevel(texture4, textureSampler, uv, 0.0); }
+    case 5u: { color = textureSampleLevel(texture5, textureSampler, uv, 0.0); }
+    case 6u: { color = textureSampleLevel(texture6, textureSampler, uv, 0.0); }
+    case 7u: { color = textureSampleLevel(texture7, textureSampler, uv, 0.0); }
+    case 8u: { color = textureSampleLevel(texture8, textureSampler, uv, 0.0); }
+    case 9u: { color = textureSampleLevel(texture9, textureSampler, uv, 0.0); }
+    case 10u: { color = textureSampleLevel(texture10, textureSampler, uv, 0.0); }
+    case 11u: { color = textureSampleLevel(texture11, textureSampler, uv, 0.0); }
+    case 12u: { color = textureSampleLevel(texture12, textureSampler, uv, 0.0); }
+    case 13u: { color = textureSampleLevel(texture13, textureSampler, uv, 0.0); }
+    case 14u: { color = textureSampleLevel(texture14, textureSampler, uv, 0.0); }
+    case 15u: { color = textureSampleLevel(texture15, textureSampler, uv, 0.0); }
     default: {}
   }
   
