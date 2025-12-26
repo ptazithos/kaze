@@ -1,5 +1,4 @@
-import { Transform } from "./component";
-import { Region } from "./component/region";
+import { Region, Texture, Transform } from "./component";
 import type { World } from "./world";
 
 export class Entity {
@@ -18,6 +17,7 @@ export const createSprite = (world: World) => {
 	const entity = world.createEntity();
 	world.addComponent(entity, Transform);
 	world.addComponent(entity, Region);
+	world.addComponent(entity, Texture);
 
 	return {
 		raw: entity,
@@ -26,6 +26,9 @@ export const createSprite = (world: World) => {
 		},
 		get region() {
 			return world.getComponent<Region>(entity, Region);
+		},
+		get texture() {
+			return world.getComponent<Texture>(entity, Texture);
 		},
 	};
 };

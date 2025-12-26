@@ -8,13 +8,23 @@ const height = canvas.clientHeight * pixelRatio;
 
 const world = new World({ canvas, width, height });
 
+const getTexture = async () => {
+	const res = await fetch("http://localhost:3000/Lenna.png");
+	const blob = await res.blob();
+	return createImageBitmap(blob);
+};
+const texture = await getTexture();
+
 {
 	const sprite = createSprite(world);
 
 	sprite.region.position = { x: width / 2, y: height / 2 };
 	sprite.region.size = { width: 200, height: 200 };
+
 	sprite.transform.rotation = Math.PI / 4;
 	sprite.transform.scale = { x: 2, y: 0.5 };
+
+	sprite.texture.image = texture;
 }
 
 {
@@ -22,8 +32,11 @@ const world = new World({ canvas, width, height });
 
 	sprite.region.position = { x: width / 2, y: height / 2 };
 	sprite.region.size = { width: 200, height: 200 };
+
 	sprite.transform.rotation = Math.PI / 4;
 	sprite.transform.scale = { x: 0.5, y: 2 };
+
+	sprite.texture.image = texture;
 }
 
 {
@@ -31,6 +44,8 @@ const world = new World({ canvas, width, height });
 
 	sprite.region.position = { x: width * 0.2, y: height * 0.2 };
 	sprite.region.size = { width: 300, height: 300 };
+
+	sprite.texture.image = texture;
 }
 
 {
@@ -40,6 +55,8 @@ const world = new World({ canvas, width, height });
 	sprite.region.size = { width: 100, height: 100 };
 
 	sprite.transform.rotation = Math.PI / 4;
+
+	sprite.texture.image = texture;
 }
 
 window.addEventListener("resize", () => {

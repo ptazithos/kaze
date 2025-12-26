@@ -1,4 +1,4 @@
-import { type Component, Region, Transform } from "@/component";
+import { type Component, Region, type Texture, Transform } from "@/component";
 import type { Renderer } from "@/renderer";
 import type { Optional } from "@/types";
 
@@ -6,11 +6,22 @@ export const render = (
 	entities: Array<Map<string, Component>>,
 	renderer: Renderer,
 ) => {
-	const renderables = entities.filter((entity) => entity.has("region"));
+	const renderables = entities.filter(
+		(entity) =>
+			entity.has("region") &&
+			entity.has("texture") &&
+			(entity.get("texture") as Optional<Texture>)?.image !== null,
+	);
 	const entitySize = Region.bufferSize + Transform.bufferSize;
 	const vertexData = new Float32Array(renderables.length * entitySize);
 
+	const textures = [];
+
 	for (let i = 0; i < renderables.length; i++) {
+		textures.push(
+			(renderables[i].get("texture") as Texture).image as ImageBitmap,
+		);
+
 		const entity = renderables[i];
 		const region = entity.get("region") as Region;
 
@@ -31,5 +42,5 @@ export const render = (
 		vertexData[i * entitySize + 11] = 0; // padding for alignment
 	}
 
-	renderer.render(vertexData.buffer, renderables.length);
+	renderer.render(vertexData.buffer, renderables.length, textures);
 };

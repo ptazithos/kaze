@@ -17,6 +17,8 @@ export class Renderer {
 	_device: Optional<GPUDevice>;
 	_context: Optional<GPUCanvasContext>;
 	_pipeline: Optional<GPURenderPipeline>;
+	_texture: Optional<GPUTexture>;
+	_sampler: Optional<GPUSampler>;
 
 	_inited: boolean;
 
@@ -30,6 +32,8 @@ export class Renderer {
 		this._device = null;
 		this._context = null;
 		this._pipeline = null;
+		this._texture = null;
+		this._sampler = null;
 
 		this._inited = false;
 	}
@@ -73,10 +77,15 @@ export class Renderer {
 			},
 		});
 
+		this._sampler = this._device.createSampler({
+			magFilter: "linear",
+			minFilter: "linear",
+		});
+
 		this._inited = true;
 	}
 
-	render(storageData: ArrayBuffer, objCount: number) {
+	render(storageData: ArrayBuffer, objCount: number, images: ImageBitmap[]) {
 		const commandEncoder = this._device?.createCommandEncoder();
 		const textureView = this._context?.getCurrentTexture().createView();
 
@@ -103,12 +112,42 @@ export class Renderer {
 			new Float32Array([this._canvas.width, this._canvas.height]),
 		);
 
+		// Create texture array from images
+		let textureWidth = 0;
+		let textureHeight = 0;
+		for (const img of images) {
+			textureWidth = Math.max(textureWidth, img.width);
+			textureHeight = Math.max(textureHeight, img.height);
+		}
+
+		const texture = this._device.createTexture({
+			size: [textureWidth, textureHeight, images.length],
+			format: "rgba8unorm",
+			usage:
+				GPUTextureUsage.TEXTURE_BINDING |
+				GPUTextureUsage.COPY_DST |
+				GPUTextureUsage.RENDER_ATTACHMENT,
+		});
+
+		// Copy images to texture layers
+		for (let i = 0; i < images.length; i++) {
+			this._device.queue.copyExternalImageToTexture(
+				{ source: images[i] },
+				{ texture, origin: [0, 0, i] },
+				[images[i].width, images[i].height],
+			);
+		}
+
+		if (!this._sampler) throw new Error("Sampler not initialized.");
+
 		const bindGroup = this._device.createBindGroup({
 			label: `bind group for sprite`,
 			layout: this._pipeline.getBindGroupLayout(0),
 			entries: [
 				{ binding: 0, resource: { buffer: storageBuffer } },
 				{ binding: 1, resource: { buffer: uniformBuffer } },
+				{ binding: 2, resource: texture.createView({ dimension: "2d-array" }) },
+				{ binding: 3, resource: this._sampler },
 			],
 		});
 

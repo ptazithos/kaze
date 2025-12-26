@@ -10,11 +10,14 @@ struct Sprite {
 
 struct VertexOutput {
   @builtin(position) position: vec4f,
-  @location(0) color: vec4f,
+  @location(0) uv: vec2f,
+  @location(1) @interpolate(flat) instanceIndex: u32,
 };
 
 @group(0) @binding(0) var<storage, read> sprites: array<Sprite>;
 @group(0) @binding(1) var<uniform> resolution: vec2f;
+@group(0) @binding(2) var textureArray: texture_2d_array<f32>;
+@group(0) @binding(3) var textureSampler: sampler;
 
 fn transalte(pos: vec2f, offset: vec2f) -> vec2f {
     return pos + offset;
@@ -54,21 +57,27 @@ fn main(
     let angle = sprite.rotation;
 
     var localPos: vec2f;
+    var uv: vec2f;
     switch (vertex_index % 6u) {
         case 0u: {
           localPos = size * anchor;
+          uv = vec2f(1.0, 1.0);
         }
         case 1u, 3u: {
           localPos = size * vec2f(anchor.x - 1.0, anchor.y);
+          uv = vec2f(0.0, 1.0);
         }
         case 2u, 5u: {
           localPos = size * vec2f(anchor.x, anchor.y - 1.0);
+          uv = vec2f(1.0, 0.0);
         }
         case 4u: {
           localPos = size * vec2f(anchor.x - 1.0, anchor.y - 1.0);
+          uv = vec2f(0.0, 0.0);
         }
         default: {
           localPos = vec2f(0.0, 0.0);
+          uv = vec2f(0.0, 0.0);
         }
     }
 
@@ -81,6 +90,7 @@ fn main(
 
     var output: VertexOutput;
     output.position = vec4f(pos, 0.0, 1.0);
-    output.color = vec4f(abs(sprite.position / resolution), 1.0, 1.0);
+    output.uv = uv;
+    output.instanceIndex = instanceIndex;
     return output;
 }
